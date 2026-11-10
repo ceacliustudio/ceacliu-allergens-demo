@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ceacliu Allergens & Nutrition – live demo</title>
+<meta name="description" content="Live demo of Ceacliu Allergens & Nutrition for WooCommerce: the 14 EU allergens with icons, nutrition table and a free-from filter.">
+<style>
+:root{--a:#c2410c;--bg:#f6f5f3;--card:#fff;--fg:#1d2327;--mut:#5b6168;--line:#e3e1dc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 "Segoe UI",Arial,sans-serif}
+header.top{background:linear-gradient(120deg,#7c2d12,#c2410c 60%,#ea580c);color:#fff;padding:18px 16px}
+header.top .in{max-width:1150px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+header.top h1{margin:0;font-size:22px}
+header.top p{margin:2px 0 0;opacity:.92}
+.lang button{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:5px 12px;cursor:pointer;font:inherit}
+.lang button.on{background:#fff;color:#7c2d12}
+.wrap{max-width:1150px;margin:18px auto;padding:0 16px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:18px}
+@media (max-width:860px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+h2{font-size:18px;margin:0 0 10px}
+.note{color:var(--mut);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+.prod{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:box-shadow .15s}
+.prod:hover{box-shadow:0 6px 18px rgba(0,0,0,.08)}
+.prod img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.prod .in{padding:10px 12px 12px}
+.prod b{display:block;font-size:15px}
+.prod .price{color:var(--mut);font-size:14px}
+.empty{padding:30px;text-align:center;color:var(--mut)}
+.tabs{display:flex;gap:6px;margin:0 0 14px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;cursor:pointer;font:inherit}
+.tabs button.on{background:var(--a);border-color:var(--a);color:#fff}
+.detail{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px}
+@media (max-width:640px){.detail{grid-template-columns:1fr}}
+.detail img{width:100%;border-radius:12px}
+.detail h3.name{font-size:24px;margin:0 0 4px}
+.back{background:none;border:0;color:var(--a);cursor:pointer;font:inherit;padding:0;margin:0 0 10px}
+.editor table{border-collapse:collapse;width:100%;font-size:14px}
+.editor th,.editor td{padding:5px 6px;border-bottom:1px solid #f0f0f1;text-align:center}
+.editor th:first-child,.editor td:first-child{text-align:left}
+.editor select{font:inherit;padding:6px;border-radius:6px;border:1px solid #c3c4c7;margin:0 0 10px;width:100%}
+.opts label{display:flex;gap:8px;margin:6px 0;cursor:pointer;font-size:14px}
+footer{max-width:1150px;margin:10px auto 40px;padding:0 16px;color:var(--mut);font-size:13px}
+/* the plugin's own stylesheet */
+/* Ceacliu Allergens & Nutrition */
+.ceacliu-alg-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--alg,#666);color:#fff;margin:0 5px 5px 0;vertical-align:middle;flex:0 0 auto;box-sizing:border-box}
+.ceacliu-alg-icon svg{width:20px;height:20px;display:block}
+.ceacliu-alg-icon.is-trace{background:transparent;color:var(--alg,#666);border:2px dashed var(--alg,#666)}
+.ceacliu-alg-icons{display:flex;flex-wrap:wrap;align-items:center;margin:6px 0 10px}
+.ceacliu-alg-icons.ceacliu-alg-loop{justify-content:inherit;margin:4px 0 6px}
+.ceacliu-alg-icons.ceacliu-alg-loop .ceacliu-alg-icon{width:24px;height:24px;margin:0 3px 3px 0}
+.ceacliu-alg-icons.ceacliu-alg-loop .ceacliu-alg-icon svg{width:16px;height:16px}
+.ceacliu-alg-icons.is-none{font-size:.85em;opacity:.75}
+.ceacliu-alg-details h3{margin:1.2em 0 .5em;font-size:1.1em}
+.ceacliu-alg-details h3:first-child{margin-top:0}
+.ceacliu-alg-list{list-style:none;margin:0 0 .8em;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 14px}
+.ceacliu-alg-list li{display:flex;align-items:center;gap:6px;margin:0}
+.ceacliu-alg-list li .ceacliu-alg-icon{margin:0}
+.ceacliu-alg-traces{font-style:italic}
+.ceacliu-alg-nutrition{border-collapse:collapse;width:100%;max-width:680px;margin:0 0 .6em;table-layout:auto}
+.ceacliu-alg-nutrition th,.ceacliu-alg-nutrition td{border-bottom:1px solid rgba(0,0,0,.12);padding:6px 8px;text-align:left;font-size:.95em}
+.ceacliu-alg-nutrition td{text-align:right;white-space:nowrap}
+.ceacliu-alg-nutrition thead th{text-align:right;font-weight:600;white-space:nowrap}
+.ceacliu-alg-nutrition tbody th{min-width:9em}
+.ceacliu-alg-nutrition thead th:first-child{text-align:left}
+.ceacliu-alg-nutrition tr.is-sub th{padding-left:22px;font-weight:400}
+.ceacliu-alg-ri,.ceacliu-alg-note{font-size:.85em;opacity:.8}
+.ceacliu-alg-filter-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px 12px;margin:6px 0 10px}
+.ceacliu-alg-filter-list label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.ceacliu-alg-filter-list .ceacliu-alg-icon{width:24px;height:24px;margin:0}
+.ceacliu-alg-filter-list .ceacliu-alg-icon svg{width:16px;height:16px}
+.ceacliu-alg-filter-title{font-weight:600;margin:0}
+.ceacliu-alg-icon .screen-reader-text{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+/* image icons from assets/icons/ (the image is the whole badge) */
+.ceacliu-alg-icon.is-image{background:transparent;border-radius:0}
+.ceacliu-alg-icon.is-image img{width:100%;height:100%;object-fit:contain;display:block}
+.ceacliu-alg-icon.is-image.is-trace{border:0;opacity:.45}
+
+.ceacliu-alg-icon{width:32px;height:32px}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <div><h1 data-t="Ceacliu Allergens & Nutrition – live demo">Ceacliu Allergens & Nutrition – live demo</h1><p data-t="sub">The 14 EU allergens with icons, the nutrition table and a "free from" filter for your WooCommerce shop.</p></div>
+  <div class="lang"><button type="button" data-lang="en" class="on">English</button> <button type="button" data-lang="ro">Română</button></div>
+</div></header>
+
+<div class="wrap">
+  <aside>
+    <div class="card">
+      <form class="ceacliu-alg-filter" id="filter" onsubmit="return false">
+        <p class="ceacliu-alg-filter-title" data-t="Show only products free from:">Show only products free from:</p>
+        <div class="ceacliu-alg-filter-list" id="filterlist" style="grid-template-columns:1fr"></div>
+        <p><button type="button" class="tabs-btn" id="clear" data-t="Clear">Clear</button></p>
+      </form>
+    </div>
+    <div class="card opts" style="margin-top:14px">
+      <h2 data-t="Shop settings">Shop settings</h2>
+      <label><input type="checkbox" id="opt_strict" checked> <span data-t="Also hide products that &quot;may contain traces&quot; of the chosen allergens">Also hide products that "may contain traces" of the chosen allergens</span></label>
+      <label><input type="checkbox" id="opt_loop" checked> <span data-t="Show the allergen icons under each product">Show the allergen icons under each product</span></label>
+      <label><input type="checkbox" id="opt_ri" checked> <span data-t="Show the % of the reference intake per portion (when a portion size is set)">Show the % of the reference intake per portion (when a portion size is set)</span></label>
+    </div>
+  </aside>
+  <main class="card">
+    <div class="tabs"><button type="button" data-view="shop" class="on" data-t="Shop">Shop</button><button type="button" data-view="editor" data-t="What the shop fills in">What the shop fills in</button><button type="button" data-view="legend" data-t="All 14 allergens">All 14 allergens</button></div>
+    <div id="view"></div>
+  </main>
+</div>
+<footer>Ceacliu Allergens & Nutrition · by Ceacliu Studios · <a href="mailto:ceacliu@gmail.com">ceacliu@gmail.com</a> · <span data-t="foot">Demo shop with invented products; the page uses the plugin's own icons and styles.</span></footer>
+
+<script>
+var ICONS = {"gluten": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNFNjVBMjkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDc4VjI2Ii8+PHBhdGggZD0iTTUwIDM0UTM4IDMyIDM3IDIyUTQ3IDIyIDUwIDM0WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCAzNFE2MiAzMiA2MyAyMlE1MyAyMiA1MCAzNFoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNTAgNDdRMzYgNDYgMzQgMzVRNDYgMzUgNTAgNDdaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTUwIDQ3UTY0IDQ2IDY2IDM1UTU0IDM1IDUwIDQ3WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCA2MFEzNiA1OSAzNCA0OFE0NiA0OCA1MCA2MFoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNTAgNjBRNjQgNTkgNjYgNDhRNTQgNDggNTAgNjBaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTUwIDI2UTQwIDE3IDUwIDEzUTYwIDE3IDUwIDI2WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjwvZz48L3N2Zz4=", "crustaceans": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNEOTRCNTgiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTM3IDUwUTMyIDM2IDIzIDMyTDE4IDM5TDI3IDQ1Ii8+PHBhdGggZD0iTTYzIDUwUTY4IDM2IDc3IDMyTDgyIDM5TDczIDQ1Ii8+PHBhdGggZD0iTTMxIDU3TDIwIDU1TDE1IDYzTTMxIDY1TDIxIDY5TDE4IDc3TTY5IDU3TDgwIDU1TDg1IDYzTTY5IDY1TDc5IDY5TDgyIDc3Ii8+PHBhdGggZD0iTTMxIDUwUTUwIDM3IDY5IDUwUTc3IDY5IDUwIDc2UTIzIDY5IDMxIDUwWiIvPjxwYXRoIGQ9Ik00MyA0NEw0MSAzNk01NyA0NEw1OSAzNiIvPjxjaXJjbGUgY3g9IjQxIiBjeT0iMzQiIHI9IjMiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48Y2lyY2xlIGN4PSI1OSIgY3k9IjM0IiByPSIzIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PC9nPjwvc3ZnPg==", "eggs": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNFMEExMDAiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDIwQzQwIDIwIDI5IDQzIDI5IDU3QzI5IDcxIDM4IDgwIDUwIDgwQzYyIDgwIDcxIDcxIDcxIDU3QzcxIDQzIDYwIDIwIDUwIDIwWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjwvZz48L3N2Zz4=", "fish": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiMyNTc2QzkiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTI0IDUwTDEyIDM3VjYzWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik0yMyA1MFE0NiAyMyA3NSA0MVE4NCA0NiA4NyA1MFE4NCA1NCA3NSA1OVE0NiA3NyAyMyA1MFoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48Y2lyY2xlIGN4PSI3MyIgY3k9IjQ3IiByPSIzLjUiIGZpbGw9IiMyNTc2QzkiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik02MCA0MFE1NSA1MCA2MCA2MCIgc3Ryb2tlPSIjMjU3NkM5IiBzdHJva2Utd2lkdGg9IjQiLz48L2c+PC9zdmc+", "peanuts": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNCOTYxMkUiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTQ1IDE4QzMwIDE3IDI2IDMwIDMyIDQzQzIwIDU5IDI5IDc5IDQ3IDc5QzY1IDgzIDc1IDY1IDY0IDUxQzc1IDM1IDYyIDE4IDQ1IDE4WiIvPjxwYXRoIGQ9Ik0zNyAyN0w1MiA0M001NSAyN0wzOSA0NU0zNiA1N0w1NyA3M001OSA1Nkw0MCA3NCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9nPjwvc3ZnPg==", "soybeans": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiMyNThBNTgiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTIzIDY5UTIxIDQzIDQzIDM3UTYxIDMzIDcyIDIwUTg3IDQ5IDYyIDY2UTQwIDgyIDIzIDY5WiIvPjxjaXJjbGUgY3g9IjM3IiBjeT0iNjMiIHI9IjYiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48Y2lyY2xlIGN4PSI1MSIgY3k9IjUzIiByPSI2IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PGNpcmNsZSBjeD0iNjQiIGN5PSI0MiIgcj0iNiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjwvZz48L3N2Zz4=", "milk": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiMyNjhBQzQiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTM4IDE4SDYyVjI5TDY4IDM5Vjc3SDMyVjM5TDM4IDI5WiIvPjxwYXRoIGQ9Ik0zOCAyOUg2Mk0zMiA0Nkg2OCIvPjxwYXRoIGQ9Ik0zOSA2MlE0NCA1NyA1MCA2MlE1NiA2NyA2MiA2MiIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9nPjwvc3ZnPg==", "nuts": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiM4NzRDMzIiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTM2IDM1UTI4IDQ1IDI4IDU4UTI4IDc5IDUwIDc5UTcyIDc5IDcyIDU4UTcyIDQ1IDY0IDM1Ii8+PHBhdGggZD0iTTI4IDM4UTMwIDI0IDQzIDI5UTUwIDIwIDU3IDI5UTcwIDI0IDcyIDM4UTYwIDQyIDUwIDM1UTQwIDQyIDI4IDM4WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCA0NFY3MCIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9nPjwvc3ZnPg==", "celery": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiM0QjkyM0UiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTQyIDc4UTM4IDU4IDQwIDQzTTU4IDc4UTYyIDU4IDYwIDQzTTUwIDc3VjMyIi8+PHBhdGggZD0iTTUwIDMyUTM3IDMyIDM0IDIxUTQ4IDE4IDUwIDMyWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCAzMlE2MyAzMiA2NiAyMVE1MiAxOCA1MCAzMloiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNDAgNDVRMjUgNDQgMjMgMzJRMzYgMzAgNDAgNDVaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTYwIDQ1UTc1IDQ0IDc3IDMyUTY0IDMwIDYwIDQ1WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik0zNSA3OEg2NSIvPjwvZz48L3N2Zz4=", "mustard": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNCQzhCMTIiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDc3VjQxTTUwIDU0TDM0IDQ2TTUwIDU5TDY2IDQ4Ii8+PHBhdGggZD0iTTUwIDQwUTQzIDIzIDUwIDE4UTU3IDIzIDUwIDQwWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxjaXJjbGUgY3g9IjMzIiBjeT0iNDQiIHI9IjciIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48Y2lyY2xlIGN4PSI2NyIgY3k9IjQ2IiByPSI3IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PGNpcmNsZSBjeD0iMzgiIGN5PSI2MyIgcj0iNSIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxjaXJjbGUgY3g9IjY0IiBjeT0iNjciIHI9IjUiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48L2c+PC9zdmc+", "sesame": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNCRDk4NjUiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDIwUTY0IDMyIDUwIDQ0UTM2IDMyIDUwIDIwWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik0yNyA0M1E0NCA0NCA0MCA2MVEyNCA2MCAyNyA0M1oiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNzMgNDNRNTYgNDQgNjAgNjFRNzYgNjAgNzMgNDNaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTM4IDY1UTUzIDY1IDQ4IDgxUTMzIDgwIDM4IDY1WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik02MiA2NVE0NyA2NSA1MiA4MVE2NyA4MCA2MiA2NVoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48L2c+PC9zdmc+", "sulphites": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiNBMjM0NjQiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTM4IDIwSDYyTTQzIDIwVjM2TDI2IDY1UTIyIDc3IDM2IDc5SDY0UTc4IDc3IDc0IDY1TDU3IDM2VjIwIi8+PHBhdGggZD0iTTM0IDYyUTQzIDU2IDUwIDYyVDY2IDYyIi8+PHBhdGggZD0iTTQ0IDcySDU2IiBzdHJva2Utd2lkdGg9IjQiLz48L2c+PC9zdmc+", "lupin": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiM3QTQzQzUiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDgwVjIxIi8+PHBhdGggZD0iTTUwIDI5UTM5IDI5IDM4IDIxUTQ3IDE4IDUwIDI5WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCAyOVE2MSAyOSA2MiAyMVE1MyAxOCA1MCAyOVoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNTAgNDJRMzQgNDAgMzMgMzBRNDUgMzAgNTAgNDJaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTUwIDQyUTY2IDQwIDY3IDMwUTU1IDMwIDUwIDQyWiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCA1NVEzNCA1MyAzMyA0M1E0NSA0MyA1MCA1NVoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48cGF0aCBkPSJNNTAgNTVRNjYgNTMgNjcgNDNRNTUgNDMgNTAgNTVaIiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTUwIDY5UTMzIDY3IDMyIDU2UTQ1IDU2IDUwIDY5WiIgZmlsbD0id2hpdGUiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik01MCA2OVE2NyA2NyA2OCA1NlE1NSA1NiA1MCA2OVoiIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiLz48L2c+PC9zdmc+", "molluscs": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDYiIGZpbGw9IiMxNDhGOTEiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTUwIDI0UTU5IDI0IDY0IDM3UTc0IDMxIDc3IDQ2UTg3IDQ4IDgxIDYzTDY2IDc1SDM0TDE5IDYzUTEzIDQ4IDIzIDQ2UTI2IDMxIDM2IDM3UTQxIDI0IDUwIDI0WiIvPjxwYXRoIGQ9Ik01MCAzMVY3ME0zOCA0MUw0MiA3ME02MiA0MUw1OCA3ME0yNyA1MUwzNiA2OU03MyA1MUw2NCA2OSIgc3Ryb2tlLXdpZHRoPSI0Ii8+PC9nPjwvc3ZnPg=="};
+var RO = {"Ceacliu Allergens & Nutrition needs WooCommerce. Please install and activate WooCommerce.": "Ceacliu Allergens & Nutrition are nevoie de WooCommerce. Instalați și activați WooCommerce.", "Settings": "Setări", "Allergens & nutrition": "Alergeni și valori nutriționale", "Allergen information": "Informații despre alergeni", "Show the allergen information for this product (tick it also when the product has no allergens, so it appears as \"free from\" in the filter).": "Afișează informațiile despre alergeni pentru acest produs (bifați și când produsul nu are alergeni, ca să apară ca „fără” în filtru).", "Allergen": "Alergen", "No": "Nu", "Contains": "Conține", "May contain traces": "Poate conține urme", "Ingredients": "Ingrediente", "e.g. wheat flour, tomatoes, mozzarella (milk), olive oil, salt": "ex. făină de grâu, roșii, mozzarella (lapte), ulei de măsline, sare", "Optional. Allergens are shown in bold automatically when their name appears; you can also use <strong>…</strong>.": "Opțional. Alergenii apar automat îngroșați când le apare numele; puteți folosi și <strong>…</strong>.", "Nutrition values per": "Valori nutriționale la", "Portion size (g or ml)": "Mărimea porției (g sau ml)", "Optional: adds a \"per portion\" column and the % of the reference intake.": "Opțional: adaugă coloana „per porție” și % din doza de referință.", "Leave the nutrition fields empty to hide the nutrition table. One energy value is enough: the other is calculated.": "Lăsați câmpurile goale ca să ascundeți tabelul nutrițional. E suficientă o singură valoare energetică: cealaltă se calculează.", "If you have a food allergy or intolerance, please ask us before you order.": "Dacă aveți o alergie sau o intoleranță alimentară, vă rugăm să ne întrebați înainte de a comanda.", "Allergens": "Alergeni", "Mark the 14 EU allergens and the nutrition values on each product (product editor → \"Allergens & nutrition\"). Add the \"free from\" filter anywhere with the shortcode [ceacliu_free_from].": "Marcați cei 14 alergeni UE și valorile nutriționale pe fiecare produs (editorul de produs → „Alergeni și valori nutriționale”). Adăugați filtrul „fără” oriunde, cu shortcode-ul [ceacliu_free_from].", "Product page": "Pagina produsului", "Show the allergen icons near the price": "Afișează iconițele alergenilor lângă preț", "Shop and category pages": "Magazin și categorii", "Show the allergen icons under each product": "Afișează iconițele alergenilor sub fiecare produs", "Product tab": "Tab pe produs", "Add the \"Allergens & nutrition\" tab with the full details": "Adaugă tab-ul „Alergeni și valori nutriționale” cu toate detaliile", "Reference intake": "Doza de referință", "Show the % of the reference intake per portion (when a portion size is set)": "Afișează % din doza de referință per porție (când e setată mărimea porției)", "\"Free from\" filter": "Filtrul „fără”", "Also hide products that \"may contain traces\" of the chosen allergens": "Ascunde și produsele care „pot conține urme” de alergenii aleși", "Note for customers": "Notă pentru clienți", "Shown under the allergen details. Empty = the default note.": "Apare sub detaliile despre alergeni. Gol = nota implicită.", "Ceacliu Allergens & Nutrition %1$s – created by %2$s": "Ceacliu Allergens & Nutrition %1$s – creat de %2$s", "Need help? Write to": "Aveți nevoie de ajutor? Scrieți la", "Cereals containing gluten": "Cereale care conțin gluten", "Crustaceans": "Crustacee", "Eggs": "Ouă", "Fish": "Pește", "Peanuts": "Arahide", "Soybeans": "Soia", "Milk": "Lapte", "Nuts": "Fructe cu coajă lemnoasă", "Celery": "Țelină", "Mustard": "Muștar", "Sesame seeds": "Semințe de susan", "Sulphur dioxide and sulphites": "Dioxid de sulf și sulfiți", "Lupin": "Lupin", "Molluscs": "Moluște", "Energy": "Valoare energetică", "Fat": "Grăsimi", "of which saturates": "din care acizi grași saturați", "Carbohydrate": "Glucide", "of which sugars": "din care zaharuri", "Fibre": "Fibre", "Protein": "Proteine", "Salt": "Sare", "No allergens declared": "Fără alergeni declarați", "This product contains none of the 14 main allergens.": "Acest produs nu conține niciunul dintre cei 14 alergeni principali.", "May contain traces of: %s.": "Poate conține urme de: %s.", "wheat, flour, rye, barley, oats, spelt, kamut, semolina, gluten, bread, pasta": "grâu, făină, secară, orz, ovăz, spelt, kamut, griș, gluten, pâine, paste, aluat, pesmet", "shrimp, prawn, prawns, crab, lobster, crayfish, crustaceans": "creveți, crab, homar, raci, crustacee", "egg, eggs, mayonnaise": "ou, ouă, ouă, maioneză", "fish, tuna, salmon, anchovy, anchovies, cod": "pește, ton, somon, hamsii, anșoa, cod", "peanut, peanuts": "arahide, alune de pământ", "soy, soya, soybean, tofu": "soia, tofu", "milk, cheese, mozzarella, mascarpone, ricotta, parmesan, butter, cream, yogurt, whey, lactose": "lapte, brânză, mozzarella, mascarpone, ricotta, parmezan, zer, unt, smântână, frișcă, iaurt, cașcaval, telemea, lactoză", "almond, almonds, hazelnut, hazelnuts, walnut, walnuts, cashew, pecan, pistachio, macadamia": "migdale, alune de pădure, alune, nuci, caju, pecan, fistic, macadamia", "celery, celeriac": "țelină", "mustard": "muștar", "sesame, tahini": "susan, tahini", "sulphite, sulphites, sulfite, sulfites, sulphur dioxide, wine": "sulfiți, dioxid de sulf, vin", "lupin": "lupin", "mussels, clams, oysters, squid, octopus, molluscs": "midii, scoici, stridii, calamar, caracatiță, moluște", "Nutrition declaration": "Declarație nutrițională", "per 100 %s": "la 100 %s", "per portion (%1$s %2$s)": "per porție (%1$s %2$s)", "% RI*": "% DR*", "*Reference intake of an average adult (8400 kJ / 2000 kcal).": "*Doza de referință pentru un adult mediu (8400 kJ / 2000 kcal).", "Show only products free from:": "Arată doar produsele fără:", "Filter": "Filtrează", "Clear": "Șterge filtrul"};
+RO["Ceacliu Allergens & Nutrition – live demo"] = "Ceacliu Allergens & Nutrition – demo live";
+RO["sub"] = "Cei 14 alergeni UE cu iconițe, tabelul nutrițional și filtrul „fără” pentru magazinul dvs. WooCommerce.";
+RO["Shop settings"] = "Setările magazinului";
+RO["Shop"] = "Magazin";
+RO["What the shop fills in"] = "Ce completează magazinul";
+RO["All 14 allergens"] = "Toți cei 14 alergeni";
+RO["foot"] = "Magazin demo cu produse inventate; pagina folosește iconițele și stilurile pluginului.";
+RO["Back to the shop"] = "Înapoi la magazin";
+RO["Product"] = "Produs";
+RO["No products match this filter."] = "Niciun produs nu corespunde filtrului.";
+RO["editor-note"] = "Așa arată tab-ul „Alergeni și valori nutriționale” din editorul de produs. Schimbați ceva și priviți produsul în magazin.";
+RO["Not declared – this product is never shown as \"free from\"."] = "Nedeclarat – produsul nu apare niciodată ca „fără”.";
+var LANG = /[?&]lang=(ro|en)/.test(location.search) ? location.search.match(/[?&]lang=(ro|en)/)[1] : (/^ro/i.test(navigator.language || "") ? "ro" : "en");
+function t(s) { return LANG === "ro" && RO[s] ? RO[s] : (s === "sub" ? "The 14 EU allergens with icons, the nutrition table and a \"free from\" filter for your WooCommerce shop." : s === "foot" ? "Demo shop with invented products; the page uses the plugin's own icons and styles." : s === "editor-note" ? "This is the \"Allergens & nutrition\" tab of the product editor. Change something and look at the product in the shop." : s); }
+
+var ALG = [["gluten", "Cereals containing gluten"], ["crustaceans", "Crustaceans"], ["eggs", "Eggs"], ["fish", "Fish"], ["peanuts", "Peanuts"], ["soybeans", "Soybeans"], ["milk", "Milk"], ["nuts", "Nuts"], ["celery", "Celery"], ["mustard", "Mustard"], ["sesame", "Sesame seeds"], ["sulphites", "Sulphur dioxide and sulphites"], ["lupin", "Lupin"], ["molluscs", "Molluscs"]];
+var NAME = {}; ALG.forEach(function (a) { NAME[a[0]] = a[1]; });
+var NUT = [["energy_kj", "Energy", "kJ", 8400], ["fat", "Fat", "g", 70], ["saturates", "of which saturates", "g", 20], ["carbs", "Carbohydrate", "g", 260], ["sugars", "of which sugars", "g", 90], ["fibre", "Fibre", "g", 0], ["protein", "Protein", "g", 50], ["salt", "Salt", "g", 6]];
+var KW = {
+  en: ["wheat", "flour", "semolina", "bread", "pasta", "egg", "eggs", "mayonnaise", "fish", "tuna", "salmon", "anchovies", "milk", "cheese", "mozzarella", "mascarpone", "parmesan", "butter", "cream", "almonds", "hazelnuts", "walnuts", "pistachio", "celery", "mustard", "sesame", "tahini", "soy", "wine", "shrimp", "mussels", "squid"],
+  ro: ["grâu", "făină", "griș", "pâine", "paste", "ou", "ouă", "maioneză", "pește", "ton", "somon", "hamsii", "lapte", "brânză", "mozzarella", "mascarpone", "parmezan", "unt", "smântână", "migdale", "alune", "nuci", "fistic", "țelină", "muștar", "susan", "tahini", "soia", "vin", "creveți", "midii", "calamar"]
+};
+
+/* drawn food pictures (no photos needed) */
+function draw(kind, seed) {
+  var c = document.createElement("canvas"); c.width = c.height = 500; var g = c.getContext("2d");
+  var rnd = function (i) { var x = Math.sin(seed * 999 + i * 77.7) * 10000; return x - Math.floor(x); }, i, a, r;
+  g.fillStyle = {pizza: "#f3e3c9", drink: "#dfeef7", dessert: "#f4e6ef", salad: "#e7f3e1", pasta: "#f7ecd6", bread: "#f2e6d8"}[kind]; g.fillRect(0, 0, 500, 500);
+  if (kind === "pizza") {
+    g.fillStyle = "#c9873d"; g.beginPath(); g.arc(250, 250, 205, 0, 7); g.fill(); g.fillStyle = "#c0392b"; g.beginPath(); g.arc(250, 250, 175, 0, 7); g.fill();
+    g.fillStyle = "#f6d98b"; for (i = 0; i < 24; i++) { a = rnd(i) * 6.28; r = rnd(i + 50) * 140; g.beginPath(); g.arc(250 + Math.cos(a) * r, 250 + Math.sin(a) * r, 22 + rnd(i + 9) * 14, 0, 7); g.fill(); }
+    g.fillStyle = seed % 2 ? "#2e7d32" : "#8e1b1b"; for (i = 0; i < 12; i++) { a = rnd(i + 100) * 6.28; r = 30 + rnd(i + 150) * 120; g.beginPath(); g.arc(250 + Math.cos(a) * r, 250 + Math.sin(a) * r, 13, 0, 7); g.fill(); }
+  } else if (kind === "drink") {
+    g.fillStyle = "rgba(255,255,255,.85)"; g.fillRect(175, 100, 150, 320); g.fillStyle = "#f39c12"; g.fillRect(185, 170, 130, 240);
+    g.fillStyle = "rgba(255,255,255,.35)"; g.fillRect(200, 180, 14, 220); g.strokeStyle = "#90a4ae"; g.lineWidth = 7; g.strokeRect(175, 100, 150, 320);
+    g.fillStyle = "#f6c453"; g.beginPath(); g.arc(320, 110, 40, 0, 7); g.fill();
+  } else if (kind === "dessert") {
+    g.fillStyle = "#fff"; g.beginPath(); g.ellipse(250, 300, 195, 75, 0, 0, 7); g.fill();
+    g.fillStyle = "#6d4c41"; g.fillRect(140, 180, 220, 110); g.fillStyle = "#f3e0c0"; g.fillRect(140, 210, 220, 26); g.fillRect(140, 252, 220, 22);
+    g.fillStyle = "#5d4037"; for (i = 0; i < 40; i++) g.fillRect(140 + rnd(i) * 215, 180 + rnd(i + 3) * 9, 4, 4);
+  } else if (kind === "salad") {
+    g.fillStyle = "#fff"; g.beginPath(); g.arc(250, 260, 200, 0, 7); g.fill();
+    for (i = 0; i < 30; i++) { g.fillStyle = ["#4caf50", "#81c784", "#2e7d32"][i % 3]; a = rnd(i) * 6.28; r = rnd(i + 7) * 130; g.beginPath(); g.ellipse(250 + Math.cos(a) * r, 260 + Math.sin(a) * r, 40, 22, rnd(i + 3) * 3, 0, 7); g.fill(); }
+    g.fillStyle = "#ec7063"; for (i = 0; i < 8; i++) { a = rnd(i + 40) * 6.28; r = rnd(i + 60) * 110; g.beginPath(); g.arc(250 + Math.cos(a) * r, 260 + Math.sin(a) * r, 18, 0, 7); g.fill(); }
+    g.fillStyle = "#e0c88f"; for (i = 0; i < 6; i++) { a = rnd(i + 80) * 6.28; r = rnd(i + 90) * 100; g.fillRect(230 + Math.cos(a) * r, 240 + Math.sin(a) * r, 38, 26); }
+  } else if (kind === "pasta") {
+    g.fillStyle = "#fff"; g.beginPath(); g.arc(250, 260, 200, 0, 7); g.fill(); g.strokeStyle = "#f2c66d"; g.lineWidth = 9;
+    for (i = 0; i < 28; i++) { g.beginPath(); g.arc(250 + (rnd(i) - .5) * 160, 260 + (rnd(i + 5) - .5) * 160, 30 + rnd(i + 9) * 50, rnd(i + 2) * 6, rnd(i + 2) * 6 + 3); g.stroke(); }
+    g.fillStyle = "#f5f5f5"; for (i = 0; i < 30; i++) g.fillRect(170 + rnd(i + 30) * 160, 190 + rnd(i + 31) * 140, 6, 6);
+  } else {
+    g.fillStyle = "#c58b4c"; g.beginPath(); g.ellipse(250, 270, 190, 120, 0, 0, 7); g.fill(); g.fillStyle = "#a86b32";
+    for (i = 0; i < 4; i++) { g.fillRect(140 + i * 65, 200, 22, 140); }
+    g.fillStyle = "#f3e2c3"; for (i = 0; i < 50; i++) g.fillRect(90 + rnd(i) * 320, 170 + rnd(i + 4) * 200, 5, 3);
+  }
+  return c.toDataURL("image/jpeg", .85);
+}
+
+var PRODUCTS = [
+  {name: "Pizza Margherita", price: 8.5, img: ["pizza", 1], contains: ["gluten", "milk"], traces: [], ingredients: {en: "wheat flour, tomatoes, mozzarella, olive oil, basil, salt", ro: "făină de grâu, roșii, mozzarella, ulei de măsline, busuioc, sare"}, nutri: {energy_kj: 1050, fat: 9, saturates: 4.2, carbs: 32, sugars: 3.1, fibre: 2, protein: 11, salt: 1.2}, portion: 350},
+  {name: "Pizza Marinara", price: 7.5, img: ["pizza", 2], contains: ["gluten"], traces: ["milk"], ingredients: {en: "wheat flour, tomatoes, garlic, oregano, olive oil, salt", ro: "făină de grâu, roșii, usturoi, oregano, ulei de măsline, sare"}, nutri: {energy_kj: 880, fat: 6, saturates: .9, carbs: 33, sugars: 3, protein: 7, salt: 1.1}, portion: 320},
+  {name: "Tuna salad", price: 9, img: ["salad", 3], contains: ["fish", "eggs", "mustard"], traces: ["celery"], ingredients: {en: "tuna, lettuce, egg, tomatoes, mustard dressing, olives", ro: "ton, salată verde, ou, roșii, dressing cu muștar, măsline"}, nutri: {energy_kj: 520, fat: 7.5, saturates: 1.2, carbs: 4, sugars: 2.5, fibre: 2.2, protein: 12, salt: .9}, portion: 280},
+  {name: "Pasta al pesto", price: 9.5, img: ["pasta", 4], contains: ["gluten", "milk", "nuts"], traces: ["eggs"], ingredients: {en: "durum wheat pasta, basil, olive oil, parmesan, pine nuts, almonds, garlic", ro: "paste din grâu dur, busuioc, ulei de măsline, parmezan, semințe de pin, migdale, usturoi"}, nutri: {energy_kj: 1480, fat: 14, saturates: 3.1, carbs: 45, sugars: 2.2, fibre: 3, protein: 12, salt: .8}, portion: 300},
+  {name: "Orange juice", price: 3, img: ["drink", 5], contains: [], traces: [], ingredients: {en: "freshly squeezed oranges", ro: "portocale stoarse proaspăt"}, nutri: {energy_kj: 190, fat: 0, saturates: 0, carbs: 10.4, sugars: 8.8, protein: .7, salt: 0}, portion: 250, ml: true},
+  {name: "Tiramisu", price: 5.9, img: ["dessert", 6], contains: ["gluten", "eggs", "milk"], traces: ["nuts"], ingredients: {en: "mascarpone, eggs, sugar, savoiardi biscuits (wheat flour), coffee, cocoa", ro: "mascarpone, ouă, zahăr, pișcoturi (făină de grâu), cafea, cacao"}, nutri: {energy_kj: 1381, fat: 20, saturates: 12, carbs: 30, sugars: 22, protein: 6, salt: .1}, portion: 120},
+  {name: "Sourdough bread", price: 4.2, img: ["bread", 7], contains: ["gluten", "sesame"], traces: ["soybeans", "lupin"], ingredients: {en: "wheat flour, rye flour, water, sesame, salt", ro: "făină de grâu, făină de secară, apă, susan, sare"}, nutri: {energy_kj: 1050, fat: 2, saturates: .4, carbs: 48, sugars: 2, fibre: 4.5, protein: 9, salt: 1.3}, portion: 0},
+  {name: "Sparkling water", price: 2, img: ["drink", 8], declared: false, contains: [], traces: [], ingredients: {en: "", ro: ""}, nutri: {}, portion: 0}
+];
+PRODUCTS.forEach(function (p) { p.pic = draw(p.img[0], p.img[1]); if (p.declared === undefined) p.declared = true; });
+
+/* ---------- the same output the plugin makes ---------- */
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]; }); }
+function icon(k, trace) {
+  return '<span class="ceacliu-alg-icon is-image' + (trace ? " is-trace" : "") + '" title="' + esc(t(NAME[k])) + '"><img src="' + ICONS[k] + '" alt=""><span class="screen-reader-text">' + esc(t(NAME[k])) + "</span></span>";
+}
+function icons(p, ctx) {
+  if (!p.declared) return "";
+  if (!p.contains.length && !p.traces.length) return '<div class="ceacliu-alg-icons ceacliu-alg-' + ctx + ' is-none">' + esc(t("No allergens declared")) + "</div>";
+  return '<div class="ceacliu-alg-icons ceacliu-alg-' + ctx + '">' + p.contains.map(function (k) { return icon(k); }).join("") + p.traces.map(function (k) { return icon(k, true); }).join("") + "</div>";
+}
+function num(v, d) { var s = Number(v).toFixed(d); if (s.indexOf(".") >= 0) s = s.replace(/0+$/, "").replace(/\.$/, ""); return LANG === "ro" ? s.replace(".", ",") : s; }
+function ingredients(text) {
+  var words = KW[LANG].concat(KW.en).sort(function (a, b) { return b.length - a.length; });
+  return esc(text).replace(new RegExp("(^|[^\\p{L}])(" + words.join("|") + ")(?![\\p{L}])", "giu"), "$1<strong>$2</strong>");
+}
+function nutrition(p) {
+  var n = p.nutri; if (!Object.keys(n).length) return "";
+  var kcal = Math.round(n.energy_kj / 4.184), por = p.portion, ri = por && document.getElementById("opt_ri").checked, unit = p.ml ? "ml" : "g";
+  var h = "<h3>" + esc(t("Nutrition declaration")) + '</h3><table class="ceacliu-alg-nutrition"><thead><tr><th></th><th>' + esc(t("per 100 %s").replace("%s", unit)) + "</th>";
+  if (por) h += "<th>" + esc(t("per portion (%1$s %2$s)").replace("%1$s", por).replace("%2$s", unit)) + "</th>";
+  if (ri) h += "<th>" + esc(t("% RI*")) + "</th>";
+  h += "</tr></thead><tbody>";
+  NUT.forEach(function (x) {
+    var k = x[0], v = n[k]; if (v === undefined) return;
+    var v100, vp = "", sh = 0;
+    if (k === "energy_kj") { v100 = num(v, 0) + " kJ / " + num(kcal, 0) + " kcal"; if (por) vp = num(v * por / 100, 0) + " kJ / " + num(kcal * por / 100, 0) + " kcal"; sh = kcal * por / 100 / 2000 * 100; }
+    else { var d = k === "salt" ? 2 : 1; v100 = num(v, d) + " " + x[2]; if (por) vp = num(v * por / 100, d) + " " + x[2]; sh = x[3] ? v * por / 100 / x[3] * 100 : 0; }
+    h += "<tr" + (k === "saturates" || k === "sugars" ? ' class="is-sub"' : "") + '><th scope="row">' + esc(t(x[1])) + "</th><td>" + v100 + "</td>" + (por ? "<td>" + vp + "</td>" : "") + (ri ? "<td>" + (sh > 0 ? num(sh, 0) + "%" : "") + "</td>" : "") + "</tr>";
+  });
+  h += "</tbody></table>";
+  if (ri) h += '<p class="ceacliu-alg-ri">' + esc(t("*Reference intake of an average adult (8400 kJ / 2000 kcal).")) + "</p>";
+  return h;
+}
+function details(p) {
+  var h = '<div class="ceacliu-alg-details">';
+  if (p.declared) {
+    h += "<h3>" + esc(t("Allergens")) + "</h3>";
+    h += p.contains.length ? '<ul class="ceacliu-alg-list">' + p.contains.map(function (k) { return "<li>" + icon(k) + "<span>" + esc(t(NAME[k])) + "</span></li>"; }).join("") + "</ul>" : "<p>" + esc(t("This product contains none of the 14 main allergens.")) + "</p>";
+    if (p.traces.length) h += '<p class="ceacliu-alg-traces">' + esc(t("May contain traces of: %s.").replace("%s", p.traces.map(function (k) { return t(NAME[k]); }).join(", "))) + "</p>";
+  } else h += "<p>" + esc(t("Not declared – this product is never shown as \"free from\".")) + "</p>";
+  if (p.ingredients[LANG]) h += "<h3>" + esc(t("Ingredients")) + '</h3><p class="ceacliu-alg-ingredients">' + ingredients(p.ingredients[LANG]) + "</p>";
+  h += nutrition(p);
+  return h + '<p class="ceacliu-alg-note">' + esc(t("If you have a food allergy or intolerance, please ask us before you order.")) + "</p></div>";
+}
+
+/* ---------- demo pages ---------- */
+var VIEW = "shop", CUR = 0, CHOSEN = [];
+function visible(p) {
+  if (!CHOSEN.length) return true;
+  if (!p.declared) return false;
+  var strict = document.getElementById("opt_strict").checked;
+  return CHOSEN.every(function (k) { return p.contains.indexOf(k) < 0 && (!strict || p.traces.indexOf(k) < 0); });
+}
+function price(v) { var s = Number(v).toFixed(2); return "€" + (LANG === "ro" ? s.replace(".", ",") : s); }
+function render() {
+  var v = document.getElementById("view"), h = "";
+  if (VIEW === "shop") {
+    var list = PRODUCTS.filter(visible);
+    h = list.length ? '<div class="grid">' + list.map(function (p) {
+      return '<div class="prod" data-i="' + PRODUCTS.indexOf(p) + '"><img src="' + p.pic + '" alt=""><div class="in"><b>' + esc(p.name) + '</b><span class="price">' + price(p.price) + "</span>" + (document.getElementById("opt_loop").checked ? icons(p, "loop") : "") + "</div></div>";
+    }).join("") + "</div>" : '<p class="empty">' + esc(t("No products match this filter.")) + "</p>";
+  } else if (VIEW === "detail") {
+    var p = PRODUCTS[CUR];
+    h = '<button type="button" class="back" data-view="shop">← ' + esc(t("Back to the shop")) + '</button><div class="detail"><img src="' + p.pic + '" alt=""><div><h3 class="name">' + esc(p.name) + '</h3><div class="price" style="font-size:20px">' + price(p.price) + "</div>" + icons(p, "single") + "</div></div><hr style=\"border:0;border-top:1px solid #e3e1dc;margin:18px 0\">" + details(p);
+  } else if (VIEW === "editor") {
+    var q = PRODUCTS[CUR];
+    h = '<div class="editor"><p class="note">' + esc(t("editor-note")) + '</p><label>' + esc(t("Product")) + ' <select id="ed_prod">' + PRODUCTS.map(function (x, i) { return '<option value="' + i + '"' + (i === CUR ? " selected" : "") + ">" + esc(x.name) + "</option>"; }).join("") + "</select></label>";
+    h += '<label style="display:flex;gap:8px;margin:0 0 10px"><input type="checkbox" id="ed_on"' + (q.declared ? " checked" : "") + "> " + esc(t("Allergen information")) + "</label>";
+    h += "<table><thead><tr><th>" + esc(t("Allergen")) + "</th><th>" + esc(t("No")) + "</th><th>" + esc(t("Contains")) + "</th><th>" + esc(t("May contain traces")) + "</th></tr></thead><tbody>";
+    ALG.forEach(function (a) {
+      var st = q.contains.indexOf(a[0]) >= 0 ? "c" : q.traces.indexOf(a[0]) >= 0 ? "t" : "";
+      h += "<tr><td>" + icon(a[0]) + " " + esc(t(a[1])) + "</td>" + ["", "c", "t"].map(function (s) { return '<td><input type="radio" name="ed_' + a[0] + '" value="' + s + '"' + (st === s ? " checked" : "") + "></td>"; }).join("") + "</tr>";
+    });
+    h += '</tbody></table><p><button type="button" class="tabs-btn" data-open="' + CUR + '">' + esc(t("Product")) + " → " + esc(q.name) + "</button></p></div>";
+  } else {
+    h = '<ul class="ceacliu-alg-list ceacliu-alg-legend">' + ALG.map(function (a) { return "<li>" + icon(a[0]) + "<span>" + esc(t(a[1])) + "</span></li>"; }).join("") + "</ul>";
+  }
+  v.innerHTML = h;
+  document.querySelectorAll(".tabs button").forEach(function (b) { b.classList.toggle("on", b.dataset.view === (VIEW === "detail" ? "shop" : VIEW)); });
+}
+function renderFilter() {
+  document.getElementById("filterlist").innerHTML = ALG.map(function (a) {
+    return '<label><input type="checkbox" value="' + a[0] + '"' + (CHOSEN.indexOf(a[0]) >= 0 ? " checked" : "") + "> " + icon(a[0]) + " <span>" + esc(t(a[1])) + "</span></label>";
+  }).join("");
+}
+function setTexts() {
+  document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = t(el.dataset.t); });
+  document.documentElement.lang = LANG;
+  document.querySelectorAll(".lang button").forEach(function (b) { b.classList.toggle("on", b.dataset.lang === LANG); });
+  renderFilter(); render();
+}
+document.addEventListener("click", function (e) {
+  var b;
+  if ((b = e.target.closest(".lang button"))) { LANG = b.dataset.lang; setTexts(); }
+  else if ((b = e.target.closest("[data-view]"))) { VIEW = b.dataset.view; render(); }
+  else if ((b = e.target.closest(".prod"))) { CUR = +b.dataset.i; VIEW = "detail"; render(); window.scrollTo({top: 0, behavior: "smooth"}); }
+  else if ((b = e.target.closest("[data-open]"))) { CUR = +b.dataset.open; VIEW = "detail"; render(); }
+  else if (e.target.id === "clear") { CHOSEN = []; renderFilter(); VIEW = "shop"; render(); }
+});
+document.addEventListener("change", function (e) {
+  var el = e.target;
+  if (el.closest("#filterlist")) { CHOSEN = [].slice.call(document.querySelectorAll("#filterlist input:checked")).map(function (x) { return x.value; }); VIEW = "shop"; render(); }
+  else if (el.id === "ed_prod") { CUR = +el.value; render(); }
+  else if (el.id === "ed_on") { PRODUCTS[CUR].declared = el.checked; }
+  else if (el.name && el.name.indexOf("ed_") === 0) {
+    var k = el.name.slice(3), p = PRODUCTS[CUR];
+    p.contains = p.contains.filter(function (x) { return x !== k; }); p.traces = p.traces.filter(function (x) { return x !== k; });
+    if (el.value === "c") p.contains.push(k); if (el.value === "t") p.traces.push(k);
+    var order = ALG.map(function (a) { return a[0]; });
+    p.contains.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); }); p.traces.sort(function (a, b) { return order.indexOf(a) - order.indexOf(b); });
+  } else if (el.closest(".opts")) render();
+});
+// a page can be opened straight from the address: ?view=detail&p=5, ?view=editor&p=0, ?ff=gluten,milk
+(function () {
+  var q = location.search;
+  var m = q.match(/[?&]view=(shop|detail|editor|legend)/); if (m) VIEW = m[1];
+  m = q.match(/[?&]p=(\d+)/); if (m && PRODUCTS[+m[1]]) CUR = +m[1];
+  m = q.match(/[?&]ff=([a-z,]+)/); if (m) CHOSEN = m[1].split(",").filter(function (k) { return NAME[k]; });
+})();
+setTexts();
+</script>
+</body>
+</html>
